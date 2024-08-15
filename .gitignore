@@ -1,0 +1,7 @@
+__pycache__
+.cache
+realtimesst.log
+test/
+venv/
+components/__pycache__
+modules/__pycache__
