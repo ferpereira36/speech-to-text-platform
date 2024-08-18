@@ -21,7 +21,7 @@ Esta aplicação depende do pacote Microsoft C++ Build Tools. É possível obtê
 
 Caso você possua placa de vídeo compativel com CUDA é possível acelerar o processamento da aplicação. Para isso é necessário seguir as seguintes etapas:
 
-> **Note**: *Veja se sua placa de vídeo NVIDIA tem suporte para CUDA, visite o site oficial [CUDA GPUs](https://developer.nvidia.com/cuda-gpus).*
+> **Nota**: *Veja se sua placa de vídeo NVIDIA tem suporte para CUDA, visite o site oficial [CUDA GPUs](https://developer.nvidia.com/cuda-gpus).*
 
 ##### Para CUDA 11.8:
 ```bash
@@ -56,7 +56,7 @@ A partir da biblioteca [RealtimeSTT](https://github.com/KoljaB/RealtimeSTT) é p
 
 ##### Como iniciar o projeto:
 
-> **Note**: *É recomendado a criação de um **ambiente virtual**, devido a possíveis conflitos de versões das bibliotecas.*
+> **Nota**: *É recomendado a criação de um **ambiente virtual**, devido a possíveis conflitos entre bibliotecas.*
 
 ```bash
 # Clone este repositório

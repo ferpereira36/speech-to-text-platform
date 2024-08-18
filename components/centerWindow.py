@@ -4,7 +4,7 @@
 # width = recebe a largura
 # height = recebe a height
 
-def centerWindow(app, width, height):
+def CenterWindow(app, width, height):
     # Obtém a largura e altura da tela
     screen_width = app.winfo_screenwidth()
     screen_height = app.winfo_screenheight()
