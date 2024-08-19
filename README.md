@@ -11,9 +11,10 @@ Esta aplicação é um projeto que está sendo desenvolvido durante a graduaçã
 As seguintes ferramentas foram usadas na construção do projeto:
 
 - [Python](https://www.python.org/)
-- [RealtimeSTT](https://github.com/KoljaB/RealtimeSTT)
 - [Tkinter](https://docs.python.org/3/library/tkinter.html)
 - [CustomTkinter](https://customtkinter.tomschimansky.com/)
+- [RealtimeSTT](https://github.com/KoljaB/RealtimeSTT)
+- [SpeechRecognition](https://github.com/Uberi/speech_recognition)
 
 ### 💻 Rodando o projeto
 
