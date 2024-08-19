@@ -66,7 +66,7 @@ $ git clone
 $ cd speech-to-text-platform
 
 # Instale as dependências
-$ pip install RealtimeSTT customtkinter colorama Pillow
+$ pip install SpeechRecognition RealtimeSTT customtkinter colorama Pillow
 
 # Execute a aplicação
 $ python main.py

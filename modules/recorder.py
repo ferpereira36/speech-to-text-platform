@@ -3,23 +3,24 @@ import threading
 from colorama import Fore
 from RealtimeSTT import AudioToTextRecorder
 import time
-import sys
-import os
 import threading
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from components.centerWindow import CenterWindow
+from components.centralizer import window_centralizer
 
 
 customtkinter.set_appearance_mode("dark")  # Modos: system (default), light, dark
 customtkinter.set_default_color_theme("blue")  # Temas: blue (default), dark-blue, green
-recWin = customtkinter.CTk()
 running = False
 recorder = None
 
-def RecorderWindow():
+def speech_to_text(root, btn_recorder_main, btn_transcription_main):
     # ---------- Configuração Gravação ---------- #
-    def RunRecord():
+    def write_text(data, input_text):
+        print(data)
+        input_text.configure(text=data)
+        input_text.update()
+        
+    
+    def run_recorder(input_text):
         global running
         running = True
         global recorder
@@ -28,39 +29,45 @@ def RecorderWindow():
         while running:
             data = recorder.text()
             if data != "" and running != False:
-                print(data)
+                write_text(data, input_text)
             else: pass
         
-    def StartRecord(btnStart, btnStop):
-        run = threading.Thread(target=RunRecord)
+    def start_recorder(btn_start, btn_stop, input_text):
+        run = threading.Thread(target=run_recorder, args=(input_text,))
         run.daemon= True
         run.start()
-        btnStart.configure(state=customtkinter.DISABLED)
-        btnStop.configure(state=customtkinter.NORMAL)
+        btn_start.configure(state=customtkinter.DISABLED)
+        btn_stop.configure(state=customtkinter.NORMAL)
         return run
 
-    def StopRecord(btnStart, btnStop):
+    def stop_recorder(btn_start, btn_stop):
         global running
         running = False
         global recorder
         recorder.stop()
-        btnStart.configure(state=customtkinter.NORMAL)
-        btnStop.configure(state=customtkinter.DISABLED)
+        btn_start.configure(state=customtkinter.NORMAL)
+        btn_stop.configure(state=customtkinter.DISABLED)
         print(Fore.GREEN + 'Gravação finalizada')
     # ---------- Fim - Configuração Gravação ---------- #
 
     # ---------- Tratamento Fechamento de Janelas ---------- #
-    def CloseRecordWindow(recWin):
+    def close_window(window_recorder):
         recorder.shutdown()
-        recWin.destroy()
-        # sys.exit()
+        window_recorder.grab_release()
+        btn_recorder_main.configure(state = customtkinter.NORMAL)
+        btn_transcription_main.configure(state = customtkinter.NORMAL)
+        window_recorder.destroy()
+        
+    def disable_event():
+        pass
     # ---------- Fim - Tratamento Fechamento de Janelas ---------- #
 
-    def configuracao(textConfig, configWin, btnStart):
+    # ---------- Janela de Configuração ---------- #
+    def configuracao(text_config, window_config, btn_start):
         global recorder
         try:
-            textConfig.configure(text="Iniciando configurações...")
-            textConfig.update()
+            text_config.configure(text="Iniciando configurações...")
+            text_config.update()
             print(Fore.GREEN + 'Iniciando configurações...')
             
             # Configura a biblioteca RealtimeSTT
@@ -70,66 +77,95 @@ def RecorderWindow():
                                             spinner=True,
                                             enable_realtime_transcription=True)
             
-            textConfig.configure(text="Configurado!")
-            textConfig.update()
+            text_config.configure(text="Configurado!")
+            text_config.update()
             print(Fore.GREEN + 'Configurado!')
             time.sleep(1)
-            btnStart.configure(state=customtkinter.NORMAL)
+            btn_start.configure(state=customtkinter.NORMAL)
 
             # Inicia a aplicação tkinter
-            configWin.grab_release()
-            configWin.destroy()
+            window_config.grab_release()
+            window_config.destroy()
         
         except Exception as e:
-            textConfig.configure(text="Tentando configurar...")
-            textConfig.update()
+            text_config.configure(text="Tentando configurar...")
+            text_config.update()
             print(Fore.YELLOW + 'Tentando configurar... ', {e})
+    # ---------- Fim - Janela de Configuração ---------- #
 
     # ---------- Janela de Gravação ---------- #
-    def main():
-        recWin.title("Janela de Gravação")
+    def main(root):
+        window_recorder = customtkinter.CTkToplevel(root)
+        window_recorder.title("Janela de Gravação")
         width = 400
         height = 520
-        x, y = CenterWindow(recWin, width, height)
-        recWin.geometry(f'{width}x{height}+{x}+{y}')
-        recWin.resizable(False, False)
+        x, y = window_centralizer(window_recorder, width, height)
+        window_recorder.geometry(f'{width}x{height}+{x}+{y}')
+        window_recorder.resizable(False, False)
+        
+        window_recorder.transient(root)
+        window_recorder.grab_set()
         
         # Intercepta o fechamento da janela
-        recWin.protocol("WM_DELETE_WINDOW", lambda: CloseRecordWindow(recWin))
+        window_recorder.protocol("WM_DELETE_WINDOW", lambda: close_window(window_recorder))
         
         # Layout
-        btnStart = customtkinter.CTkButton(recWin, text="Iniciar Gravação",
-                                                    command=lambda: StartRecord(btnStart, btnStop),
-                                                    fg_color='green',
-                                                    state=customtkinter.DISABLED)
-        btnStart.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
+        btn_start = customtkinter.CTkButton(window_recorder,
+                                            text="Iniciar Gravação",
+                                            command=lambda: start_recorder(btn_start, btn_stop, input_text),
+                                            fg_color='green',
+                                            state=customtkinter.DISABLED)
+        btn_start.grid(row=0, column=0, padx=10, pady=10)
         
-        btnStop = customtkinter.CTkButton(recWin, text="Parar Gravação",
-                                                    command=lambda: StopRecord(btnStart, btnStop),
-                                                    fg_color="#950606",
-                                                    state=customtkinter.DISABLED)
-        btnStop.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
+        btn_stop = customtkinter.CTkButton(window_recorder,
+                                            text="Parar Gravação",
+                                            command=lambda: stop_recorder(btn_start, btn_stop),
+                                            fg_color="#950606",
+                                            state=customtkinter.DISABLED)
+        btn_stop.grid(row=0, column=1, padx=10, pady=10)
         
+        input_text = customtkinter.CTkLabel(window_recorder,
+                                            width=360,
+                                            height=440,
+                                            text="",
+                                            fg_color='#2e2e2e',
+                                            bg_color='white',
+                                            wraplength=360,
+                                            padx=10,
+                                            pady=10,
+                                            anchor='nw',
+                                            justify='left',
+                                            font=("Helvetica", 12),
+                                            state=customtkinter.DISABLED)
+        input_text.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
         
-        configWin = customtkinter.CTkToplevel(recWin)
-        w = 200
+        window_recorder.grid_columnconfigure(0, weight=1)
+        window_recorder.grid_columnconfigure(1, weight=1)
+        
+        # ---------- Janela de Configuração Inicial ---------- #
+        window_config = customtkinter.CTkToplevel(window_recorder)
+        window_config.title('Config. Microfone')
+        w = 240
         h = 96
-        xx, yy = CenterWindow(configWin, width, height)
-        configWin.geometry(f'{w}x{h}+{xx}+{yy}')
-        configWin.resizable(False, False)
+        xx, yy = window_centralizer(window_config, width, height)
+        window_config.geometry(f'{w}x{h}+{xx}+{yy}')
+        window_config.resizable(False, False)
         
-        configWin.transient(recWin)
-        configWin.grab_set()
+        window_config.transient(window_recorder)
+        window_config.grab_set()
+        
+        # Desabilitando o evento de fechamento da janela de configurações
+        window_config.protocol("WM_DELETE_WINDOW", disable_event)
 
-        textConfig = customtkinter.CTkLabel(configWin, text="", font=("Helvetica", 14, "bold"))
-        textConfig.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
+        # Layout
+        text_config = customtkinter.CTkLabel(window_config,
+                                             text="",
+                                             font=("Helvetica", 14, "bold"))
+        text_config.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
         
-        threading.Thread(target=configuracao, args=(textConfig, configWin, btnStart)).start()
+        threading.Thread(target=configuracao, args=(text_config, window_config, btn_start)).start()
+        # ---------- Fim - Janela de Configuração Inicial ---------- #
         
-        recWin.mainloop()
-    
-    if __name__ == "__main__":
-        main()
-    else:
-        main()
+        window_recorder.mainloop()
     # ---------- Fim - Janela de Gravação ---------- #
+    main(root)
