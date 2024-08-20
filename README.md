@@ -15,6 +15,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [CustomTkinter](https://customtkinter.tomschimansky.com/)
 - [RealtimeSTT](https://github.com/KoljaB/RealtimeSTT)
 - [SpeechRecognition](https://github.com/Uberi/speech_recognition)
+- [Googletrans](https://py-googletrans.readthedocs.io/en/latest)
 
 ### 💻 Rodando o projeto
 
@@ -67,7 +68,7 @@ $ git clone
 $ cd speech-to-text-platform
 
 # Instale as dependências
-$ pip install SpeechRecognition RealtimeSTT customtkinter colorama Pillow
+$ pip install SpeechRecognition RealtimeSTT customtkinter colorama Pillow googletrans==4.0.0-rc1
 
 # Execute a aplicação
 $ python main.py

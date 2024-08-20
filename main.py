@@ -15,9 +15,9 @@ def close_main_window():
     root.after(500, root.destroy)
     root.after(500, root.quit)
     sys.exit()
-    # os._exit(0)
 # ---------- Fim - Tratamento Fechamento de Janelas ---------- #
 
+# ---------- Módulos da Aplicação ---------- #
 def module_speech_to_text(btn_recorder_main, btn_transcription_main):
     btn_recorder_main.configure(state = customtkinter.DISABLED)
     btn_transcription_main.configure(state = customtkinter.DISABLED)
@@ -26,9 +26,10 @@ def module_speech_to_text(btn_recorder_main, btn_transcription_main):
 def module_archive_to_text(btn_recorder_main, btn_transcription_main):
     btn_recorder_main.configure(state = customtkinter.DISABLED)
     btn_transcription_main.configure(state = customtkinter.DISABLED)
-    archive_to_text()
+    archive_to_text(root)
     btn_recorder_main.configure(state = customtkinter.NORMAL)
     btn_transcription_main.configure(state = customtkinter.NORMAL)
+# ---------- Fim - Módulos da Aplicação ---------- #
 
 def main():
     # ---------- Janela Principal ---------- #
@@ -39,6 +40,7 @@ def main():
     x, y = window_centralizer(root, width, height)
     root.geometry(f'{width}x{height}+{x}+{y}')
     root.resizable(False, False)
+    root.iconbitmap("./assets/iconBook.ico")
 
     # Intercepta o fechamento da janela
     root.protocol("WM_DELETE_WINDOW", lambda: close_main_window())
